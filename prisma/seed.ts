@@ -1,4 +1,10 @@
-import { EnumBusinessNature, EnumTransferService, EnumUserRole, Prisma, PrismaClient } from '@prisma/client';
+import {
+  EnumBusinessNature,
+  EnumTransferService,
+  EnumUserRole,
+  Prisma,
+  PrismaClient,
+} from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 
 const prisma = new PrismaClient();
@@ -55,8 +61,8 @@ const createEventBoostedCategory = async () => {
   ];
 
   await prisma.$transaction(
-    eventBoostedCategory.map(
-      (category) => prisma.eventBoostedCategory.create({ data: category }),
+    eventBoostedCategory.map((category) =>
+      prisma.eventBoostedCategory.create({ data: category }),
     ),
   );
 };
@@ -66,9 +72,9 @@ const createDefaultPaymentSetting = async () => {
     platformCharge: 8,
     platformCurrency: 'USD',
     platformCountryCode: 'ID',
-    currencyFixRate: 0.30,
-    domesticTransactionFee: 3.40,
-    internationalTransactionFee: 4.40,
+    currencyFixRate: 0.3,
+    domesticTransactionFee: 3.4,
+    internationalTransactionFee: 4.4,
     payoutDomesticFee: 2,
     payoutInternationalFee: 2,
   };
@@ -76,30 +82,30 @@ const createDefaultPaymentSetting = async () => {
   await prisma.paymentSetting.create({ data });
 };
 
-const createAssets = async () => {
-  const ASSETS: Prisma.AssetCreateInput[] = [
-    {
-      mimetype: 'image/png',
-      original_name: 'Terracepatio.webp',
-      file_key: 'user-images/caef45d3-a97d-4b01-a43d-b6fa353f68bd.webp',
-      uid: 'caef45d3-a97d-4b01-a43d-b6fa353f68bd',
-      url: 'https://dmtadventure.s3.amazonaws.com/user-images/caef45d3-a97d-4b01-a43d-b6fa353f68bd.webp',
-    },
-    {
-      mimetype: 'image/png',
-      original_name: 'outside_dinner.webp',
-      file_key: 'user-images/dd20b0e9-416f-4a27-a4de-5b954f40b462.webp',
-      uid: 'dd20b0e9-416f-4a27-a4de-5b954f40b462',
-      url: 'https://dmtadventure.s3.amazonaws.com/user-images/dd20b0e9-416f-4a27-a4de-5b954f40b462.webp',
-    },
-  ];
+// const createAssets = async () => {
+//   const ASSETS: Prisma.AssetCreateInput[] = [
+//     {
+//       mimetype: 'image/png',
+//       original_name: 'Terracepatio.webp',
+//       file_key: 'user-images/caef45d3-a97d-4b01-a43d-b6fa353f68bd.webp',
+//       uid: 'caef45d3-a97d-4b01-a43d-b6fa353f68bd',
+//       url: 'https://dmtadventure.s3.amazonaws.com/user-images/caef45d3-a97d-4b01-a43d-b6fa353f68bd.webp',
+//     },
+//     {
+//       mimetype: 'image/png',
+//       original_name: 'outside_dinner.webp',
+//       file_key: 'user-images/dd20b0e9-416f-4a27-a4de-5b954f40b462.webp',
+//       uid: 'dd20b0e9-416f-4a27-a4de-5b954f40b462',
+//       url: 'https://dmtadventure.s3.amazonaws.com/user-images/dd20b0e9-416f-4a27-a4de-5b954f40b462.webp',
+//     },
+//   ];
 
-  const transaction = await prisma.$transaction(
-    ASSETS.map((asset) => prisma.asset.create({ data: asset })),
-  );
+//   const transaction = await prisma.$transaction(
+//     ASSETS.map((asset) => prisma.asset.create({ data: asset })),
+//   );
 
-  return { hotelPhoto: transaction[0], outsideDinner: transaction[1] };
-};
+//   return { hotelPhoto: transaction[0], outsideDinner: transaction[1] };
+// };
 
 const createPlaces = async (userId: number) => {
   const PLACES: Prisma.PlaceCreateManyInput[] = [
@@ -108,7 +114,7 @@ const createPlaces = async (userId: number) => {
       city: 'Bundon',
       country: 'Nepal',
       description:
-        'Hilton Hotels & Resorts is Hilton\'s flagship brand and one of the largest hotel brands in the world.',
+        "Hilton Hotels & Resorts is Hilton's flagship brand and one of the largest hotel brands in the world.",
       postal_code: '1A4912',
       province: 'Mondco',
       street: '1020 W Blvd',
@@ -153,7 +159,9 @@ const createPlaces = async (userId: number) => {
     },
   ];
 
-  const places = prisma.$transaction(PLACES.map((place) => prisma.place.create({ data: place })));
+  const places = prisma.$transaction(
+    PLACES.map((place) => prisma.place.create({ data: place })),
+  );
 
   return places;
 };
@@ -204,11 +212,11 @@ interface DecRecordData {
 
 const createDevRecords = async (data: DecRecordData) => {
   const [place1, place2] = await createPlaces(data.userId);
-  const rooms = await createRooms([place1.id, place2.id]);
+  await createRooms([place1.id, place2.id]);
 };
 
 const main = async () => {
-  const { admin, seller } = await createUsers();
+  const { seller } = await createUsers();
 
   await createEventBoostedCategory();
 
