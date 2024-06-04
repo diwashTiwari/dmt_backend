@@ -26,5 +26,4 @@ import { TwilioService } from '../../../common/services/twilio/twilio.service';
     TwilioService,
   ],
 })
-export class BookPlaceModule {
-}
+export class BookPlaceModule {}

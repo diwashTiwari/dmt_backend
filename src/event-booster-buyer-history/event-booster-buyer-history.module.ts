@@ -16,11 +16,9 @@ import { TwilioService } from '../../common/services/twilio/twilio.service';
     JwtUtilityService,
     JwtService,
     UsersService,
-    TwilioService
+    TwilioService,
   ],
-  imports: [
-    forwardRef(() => PaymentModule),
-  ],
-  exports: [EventBoosterBuyerHistoryService]
+  imports: [forwardRef(() => PaymentModule)],
+  exports: [EventBoosterBuyerHistoryService],
 })
-export class EventBoosterBuyerHistoryModule { }
+export class EventBoosterBuyerHistoryModule {}

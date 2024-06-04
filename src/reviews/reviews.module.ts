@@ -11,7 +11,15 @@ import { TwilioService } from '../../common/services/twilio/twilio.service';
 
 @Module({
   controllers: [ReviewsController],
-  providers: [ReviewsService, PlacesService, ReviewAggregateListner, ImageService, JwtUtilityService, JwtService, UsersService, TwilioService],
+  providers: [
+    ReviewsService,
+    PlacesService,
+    ReviewAggregateListner,
+    ImageService,
+    JwtUtilityService,
+    JwtService,
+    UsersService,
+    TwilioService,
+  ],
 })
-export class ReviewsModule {
-}
+export class ReviewsModule {}

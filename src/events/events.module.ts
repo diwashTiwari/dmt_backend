@@ -9,8 +9,14 @@ import { ImageService } from '../../common/services/images/image.service';
 
 @Module({
   controllers: [EventsController],
-  providers: [EventsService, JwtService, JwtUtilityService, UsersService, TwilioService, ImageService],
+  providers: [
+    EventsService,
+    JwtService,
+    JwtUtilityService,
+    UsersService,
+    TwilioService,
+    ImageService,
+  ],
   exports: [EventsService],
 })
-export class EventsModule {
-}
+export class EventsModule {}

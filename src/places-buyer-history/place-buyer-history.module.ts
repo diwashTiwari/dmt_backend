@@ -18,10 +18,7 @@ import { TwilioService } from '../../common/services/twilio/twilio.service';
     UsersService,
     TwilioService,
   ],
-  imports: [
-    forwardRef(() => PaymentModule),
-  ],
+  imports: [forwardRef(() => PaymentModule)],
   exports: [PlaceBuyerHistoryService],
 })
-export class PlaceBuyerHistoryModule {
-}
+export class PlaceBuyerHistoryModule {}

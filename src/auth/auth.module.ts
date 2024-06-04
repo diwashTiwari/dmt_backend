@@ -10,7 +10,14 @@ import { TwilioService } from '../../common/services/twilio/twilio.service';
 
 @Module({
   controllers: [AuthController],
-  providers: [AuthService, JwtService, NodemailerEmailService, UsersService, DmtNodemailerEmailService, JwtUtilityService, TwilioService],
+  providers: [
+    AuthService,
+    JwtService,
+    NodemailerEmailService,
+    UsersService,
+    DmtNodemailerEmailService,
+    JwtUtilityService,
+    TwilioService,
+  ],
 })
-export class AuthModule {
-}
+export class AuthModule {}

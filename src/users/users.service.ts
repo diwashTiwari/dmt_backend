@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { DatabseError } from '../../common/errors/database.error';
 import prisma from '../../config/db';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -10,17 +15,16 @@ import { TwilioService } from '../../common/services/twilio/twilio.service';
 
 @Injectable()
 export class UsersService {
-
   constructor(
     private readonly jwtUtilityService: JwtUtilityService,
     private readonly twilioService: TwilioService,
-  ) {
-  }
+  ) {}
 
   async sendWhatsAppCode(user: UserEntity, country: string): Promise<any> {
     try {
-
-      const result = await this.twilioService.initiatePhoneNumberVerification(user.phoneNumber);
+      const result = await this.twilioService.initiatePhoneNumberVerification(
+        user.phoneNumber,
+      );
 
       const status = result.status;
       const valid = result.valid;
@@ -28,7 +32,6 @@ export class UsersService {
       await this.updateCountry(user.id, country);
 
       return { status, valid };
-
     } catch (e) {
       console.log(e);
       return Promise.reject(e);
@@ -37,20 +40,25 @@ export class UsersService {
 
   async checkWhatsAppCode(user: UserEntity, code: string): Promise<any> {
     try {
-
-      const result = await this.twilioService.confirmPhoneNumber(user.phoneNumber, code);
+      const result = await this.twilioService.confirmPhoneNumber(
+        user.phoneNumber,
+        code,
+      );
 
       const status = result.status;
       const valid = result.valid;
 
       if (!valid || status !== 'approved') {
-        return Promise.reject(new BadRequestException(`Wrong code provided. status : ${status} valid ${valid}`));
+        return Promise.reject(
+          new BadRequestException(
+            `Wrong code provided. status : ${status} valid ${valid}`,
+          ),
+        );
       }
 
       await this.markPhoneNumberAsConfirmed(user.id);
 
       return { status, valid };
-
     } catch (e) {
       console.log(e);
       return Promise.reject(e);
@@ -59,7 +67,6 @@ export class UsersService {
 
   async switchUserRoleBuyerSeller(user: UserEntity): Promise<any> {
     try {
-
       if (user.role === EnumUserRole.BUYER) {
         user.role = EnumUserRole.SELLER;
         user.isSeller = true;
@@ -67,23 +74,31 @@ export class UsersService {
         user.role = EnumUserRole.BUYER;
         user.isSeller = false;
       } else {
-        return Promise.reject(new UnauthorizedException('Unauthorized user role!'));
+        return Promise.reject(
+          new UnauthorizedException('Unauthorized user role!'),
+        );
       }
 
-      const updateUser = await this.updateUserRole(user.id, user.role, user.isSeller);
+      const updateUser = await this.updateUserRole(
+        user.id,
+        user.role,
+        user.isSeller,
+      );
 
       const token = await this.jwtUtilityService.sign(updateUser);
 
       return { user: updateUser, token };
-
     } catch (e) {
       return Promise.reject(e);
     }
   }
 
-  async updateUserRole(userId: number, role: EnumUserRole, isSeller: boolean): Promise<any> {
+  async updateUserRole(
+    userId: number,
+    role: EnumUserRole,
+    isSeller: boolean,
+  ): Promise<any> {
     try {
-
       const updatedUser = await prisma.user.update({
         where: { id: userId },
         data: {
@@ -96,7 +111,6 @@ export class UsersService {
       delete updatedUser.password;
 
       return updatedUser;
-
     } catch (e) {
       throw e;
     }
@@ -104,13 +118,14 @@ export class UsersService {
 
   async updateUserStatus(data: UpdateUserStatusDto): Promise<any> {
     try {
-
       const { userId, status } = data;
 
       const user = await this.findByUserId(userId);
 
       if (user.status === status) {
-        return Promise.reject(new BadRequestException(`User already in ${status} status!`));
+        return Promise.reject(
+          new BadRequestException(`User already in ${status} status!`),
+        );
       }
 
       const updatedUser = await prisma.user.update({
@@ -124,7 +139,6 @@ export class UsersService {
       delete updatedUser.password;
 
       return updatedUser;
-
     } catch (e) {
       throw e;
     }
@@ -132,7 +146,6 @@ export class UsersService {
 
   async updateCountry(userId: number, country: string): Promise<any> {
     try {
-
       const updatedUser = await prisma.user.update({
         where: { id: userId },
         data: {
@@ -144,7 +157,6 @@ export class UsersService {
       delete updatedUser.password;
 
       return updatedUser;
-
     } catch (e) {
       throw e;
     }
@@ -180,11 +192,10 @@ export class UsersService {
     try {
       const users = await prisma.user.findMany({});
 
-      return users.map(user => {
+      return users.map((user) => {
         const { password, ...userWithoutPassword } = user;
         return userWithoutPassword;
       });
-
     } catch (error) {
       throw new DatabseError(error);
     }
@@ -192,7 +203,6 @@ export class UsersService {
 
   async findByUserId(id: number) {
     try {
-
       const user = await prisma.user.findFirst({
         where: { id: id },
       });
@@ -202,7 +212,6 @@ export class UsersService {
       }
 
       return user;
-
     } catch (error) {
       throw new DatabseError(error);
     }
@@ -210,7 +219,6 @@ export class UsersService {
 
   async update(id: number, updateUserDto: UpdateUserDto) {
     try {
-
       const updateData: any = { ...updateUserDto };
 
       if (updateUserDto.email) {
@@ -229,7 +237,6 @@ export class UsersService {
       delete user['password'];
 
       return user;
-
     } catch (error) {
       throw new DatabseError(error);
     }

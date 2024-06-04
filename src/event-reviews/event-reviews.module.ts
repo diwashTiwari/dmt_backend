@@ -8,7 +8,12 @@ import { TwilioService } from '../../common/services/twilio/twilio.service';
 
 @Module({
   controllers: [EventReviewsController],
-  providers: [EventReviewsService, JwtService, JwtUtilityService, UsersService, TwilioService],
+  providers: [
+    EventReviewsService,
+    JwtService,
+    JwtUtilityService,
+    UsersService,
+    TwilioService,
+  ],
 })
-export class EventReviewsModule {
-}
+export class EventReviewsModule {}

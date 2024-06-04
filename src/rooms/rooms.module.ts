@@ -9,7 +9,13 @@ import { TwilioService } from '../../common/services/twilio/twilio.service';
 
 @Module({
   controllers: [RoomsController],
-  providers: [RoomsService, CaslAbilityFactory, JwtUtilityService, JwtService, UsersService, TwilioService],
+  providers: [
+    RoomsService,
+    CaslAbilityFactory,
+    JwtUtilityService,
+    JwtService,
+    UsersService,
+    TwilioService,
+  ],
 })
-export class RoomsModule {
-}
+export class RoomsModule {}
