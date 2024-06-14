@@ -24,7 +24,11 @@ import { FilesValidationPipe } from '../../common/pipes/files-validation.pipe';
 import { CreatePlaceDto } from './dto/create-place.dto';
 import { GetPlaceQueryDto } from './dto/get-place.dto';
 import { UpdatePlaceDto } from './dto/update-place.dto';
-import { PlaceActiveEntity, PlaceEntity, PlaceImagesEntity } from './entities/place.entity';
+import {
+  PlaceActiveEntity,
+  PlaceEntity,
+  PlaceImagesEntity,
+} from './entities/place.entity';
 import { PlacesService } from './places.service';
 import { AuthGuard } from '../../common/middlewears/auth.guard';
 import { RoleAuthGuard } from '../../common/middlewears/role-auth.guard';
@@ -40,26 +44,38 @@ import { RequestWithUser } from '../../common/requests/request-with-user';
 export class PlacesController {
   private logger = new Logger(PlacesController.name);
 
-  constructor(
-    private readonly placesService: PlacesService,
-  ) {
-  }
+  constructor(private readonly placesService: PlacesService) {}
 
   @ApiCreatedResponse({ type: PlaceEntity })
   @Post()
   @SetMetadata('roles', [EnumUserRole.SELLER])
-  @UseGuards(AuthGuard, RoleAuthGuard, PhoneCountryValidationGuard, ContinentGuard)
+  @UseGuards(
+    AuthGuard,
+    RoleAuthGuard,
+    PhoneCountryValidationGuard,
+    ContinentGuard,
+  )
   @UseInterceptors(FilesInterceptor('photos'))
   async create(
     @Req() req: RequestWithUser,
     @Body() createPlaceDto: CreatePlaceDto,
-    @UploadedFiles(new FilesValidationPipe()) photos: Array<Express.Multer.File>,
+    @UploadedFiles(new FilesValidationPipe())
+    photos: Array<Express.Multer.File>,
     @Res() res: Response,
   ) {
     try {
       const userId = req.user.id;
-      const result = await this.placesService.create(createPlaceDto, photos, userId);
-      SuccessResponse.sendSuccessResponse(res, HttpStatus.CREATED, result, 'Place created successfully.');
+      const result = await this.placesService.create(
+        createPlaceDto,
+        photos,
+        userId,
+      );
+      SuccessResponse.sendSuccessResponse(
+        res,
+        HttpStatus.CREATED,
+        result,
+        'Place created successfully.',
+      );
     } catch (err) {
       ErrorResponse.sendErrorResponse(res, err);
     }
@@ -74,8 +90,14 @@ export class PlacesController {
     @Res() res: Response,
   ) {
     try {
-      const result = await this.placesService.getCreatedPlacesForSeller(sellerId);
-      SuccessResponse.sendSuccessResponse(res, HttpStatus.OK, result, 'Places for seller fetched successfully.');
+      const result =
+        await this.placesService.getCreatedPlacesForSeller(sellerId);
+      SuccessResponse.sendSuccessResponse(
+        res,
+        HttpStatus.OK,
+        result,
+        'Places for seller fetched successfully.',
+      );
     } catch (err) {
       ErrorResponse.sendErrorResponse(res, err);
     }
@@ -103,7 +125,10 @@ export class PlacesController {
 
   @ApiOkResponse({ type: PlaceEntity })
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: string, @Query() query: GetPlaceQueryDto) {
+  findOne(
+    @Param('id', ParseIntPipe) id: string,
+    @Query() query: GetPlaceQueryDto,
+  ) {
     const { bookings, reviews, rooms, _count } = query;
 
     return this.placesService.findOne(+id, {

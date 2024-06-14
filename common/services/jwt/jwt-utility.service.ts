@@ -7,17 +7,23 @@ export class JwtUtilityService {
   constructor(
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
-  ) {
-  }
+  ) {}
 
   async sign(payload: any) {
     try {
+      const expirationTime = this.configService.get(
+        'JWT_VERIFICATION_TOKEN_EXPIRATION_TIME',
+      );
+
+      const expiresIn =
+        typeof expirationTime === 'number'
+          ? `${expirationTime}s`
+          : expirationTime;
 
       return this.jwtService.sign(payload, {
         secret: this.configService.get('JWT_VERIFICATION_TOKEN_SECRET'),
-        expiresIn: `${this.configService.get('JWT_VERIFICATION_TOKEN_EXPIRATION_TIME')}s`,
+        expiresIn,
       });
-
     } catch (e) {
       console.error(e);
       throw e;
@@ -26,15 +32,14 @@ export class JwtUtilityService {
 
   async verify(token: string) {
     try {
-
-      return await this.jwtService.verify(token, {
+      const isVerified = await this.jwtService.verify(token, {
         secret: this.configService.get('JWT_VERIFICATION_TOKEN_SECRET'),
       });
 
+      return isVerified;
     } catch (e) {
       console.error(e);
       throw e;
     }
   }
-
 }

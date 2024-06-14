@@ -3,7 +3,6 @@ import { ApiString } from '../../../common/decorators/swagger.decorators';
 import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class UpdateUserDto {
-
   @ApiString()
   @IsString()
   @IsNotEmpty()
@@ -27,5 +26,4 @@ export class UpdateUserDto {
   @IsNotEmpty()
   @IsOptional()
   phoneNumber?: string;
-
 }

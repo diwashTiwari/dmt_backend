@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   BadRequestException,
   Injectable,
+  Logger,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -22,6 +24,8 @@ export class UsersService {
 
   async sendWhatsAppCode(user: UserEntity, country: string): Promise<any> {
     try {
+      console.log(user.phoneNumber);
+
       const result = await this.twilioService.initiatePhoneNumberVerification(
         user.phoneNumber,
       );
@@ -33,7 +37,6 @@ export class UsersService {
 
       return { status, valid };
     } catch (e) {
-      console.log(e);
       return Promise.reject(e);
     }
   }
@@ -173,6 +176,12 @@ export class UsersService {
         isEmailConfirmed: true,
         updatedAt: new Date(),
       },
+    });
+  }
+
+  async getById(user_id: number) {
+    return prisma.user.findFirst({
+      where: { id: Number(user_id) },
     });
   }
 

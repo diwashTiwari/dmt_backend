@@ -1,6 +1,5 @@
 import { BadGatewayException } from '@nestjs/common';
 import { S3ImageService } from './s3-image.service';
-import type { Multer } from 'multer';
 
 export interface FileOptions extends Omit<Express.Multer.File, 'path'> {
   path?: string;
@@ -19,7 +18,9 @@ export abstract class IImageService {
   abstract getImage(): string;
   abstract getImages(): string[];
   abstract uploadImage(fileOptions: FileOptions): Promise<ImageResponse>;
-  abstract uploadImages(images: Express.Multer.File[]): Promise<ImageResponse[]>;
+  abstract uploadImages(
+    images: Express.Multer.File[],
+  ): Promise<ImageResponse[]>;
   abstract deleteImage(imageUUID: string): Promise<any>;
 }
 
@@ -50,7 +51,7 @@ export class ImageService implements IImageService {
   private transformImages(images: Express.Multer.File[]) {
     return images.map((image) => ({
       ...image,
-      originalname: encodeURIComponent(image.originalname)
+      originalname: encodeURIComponent(image.originalname),
     }));
   }
 

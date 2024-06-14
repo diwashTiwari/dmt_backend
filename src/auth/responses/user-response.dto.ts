@@ -1,11 +1,16 @@
-import { IsBoolean, IsEnum, IsNumber, IsString, ValidateNested } from 'class-validator';
+import {
+  IsBoolean,
+  IsEnum,
+  IsNumber,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
 import { GeneralResponseDto } from '../../../common/responses/general-response.dto';
 import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import { EnumUserRole, EnumUserStatus } from '@prisma/client';
 
 export class UserResponse {
-
   @ApiProperty()
   @IsNumber()
   id: number;
@@ -61,14 +66,11 @@ export class UserResponse {
   @ApiProperty()
   @IsString()
   updatedAt: string;
-
 }
 
 export class UserResponseDto extends GeneralResponseDto {
-
   @ApiProperty()
   @Type(() => UserResponse)
   @ValidateNested()
   data: UserResponse;
-
 }

@@ -10,7 +10,10 @@ import { dollarsToCents } from '../../../helpers/number.helper';
 import { PlacesService } from '../../places/places.service';
 import { UserEntity } from '../../users/entities/user.entity';
 import { BookingCancellationService } from '../helpers/booking-cancel.helper';
-import { BookingManager, PlaceBookingCalculator } from '../helpers/booking-helper';
+import {
+  BookingManager,
+  PlaceBookingCalculator,
+} from '../helpers/booking-helper';
 import { CreatePlaceBookingDto } from './dto/create-book-place.dto';
 import { PlaceBookedEvent } from './events/place-booked.event';
 
@@ -20,13 +23,18 @@ interface BookPlaceData {
 
 @Injectable()
 export class BookPlaceService {
-  constructor(private readonly placeService: PlacesService, private eventEmitter: EventEmitter2) {
-  }
+  constructor(
+    private readonly placeService: PlacesService,
+    private eventEmitter: EventEmitter2,
+  ) {}
 
-  async bookPlace(placeId: number, bookPlaceDto: CreatePlaceBookingDto, params: BookPlaceData) {
+  async bookPlace(
+    placeId: number,
+    bookPlaceDto: CreatePlaceBookingDto,
+    params: BookPlaceData,
+  ) {
     const { end_date, start_date, room_ids } = bookPlaceDto;
 
-    // @ts-ignore
     const place = (await this.placeService.findOne(placeId, {
       rooms: true,
       user: true,
@@ -44,7 +52,9 @@ export class BookPlaceService {
     );
 
     if (manager.bookingCalculator.hasInvalidPackage())
-      throw new ApiError(`Booking contains rooms that are invalid or no longer exsist`);
+      throw new ApiError(
+        `Booking contains rooms that are invalid or no longer exsist`,
+      );
 
     const booking = await prisma.booking.create({
       data: {
@@ -68,7 +78,10 @@ export class BookPlaceService {
 
     this.eventEmitter.emit(EVENTS.booking.placeBooking, placeBookedEvent);
 
-    await this.eventEmitter.emitAsync(EVENTS.booking.placeBookingPayment, placeBookedEvent);
+    await this.eventEmitter.emitAsync(
+      EVENTS.booking.placeBookingPayment,
+      placeBookedEvent,
+    );
 
     return booking;
   }
@@ -83,12 +96,16 @@ export class BookPlaceService {
       },
     });
 
-    if (!booking) throw new ApiError(`Booking with id ${bookingId} does not exsist`);
+    if (!booking)
+      throw new ApiError(`Booking with id ${bookingId} does not exsist`);
 
     if (booking.status === 'COMPLETED' || booking.status == 'ACCEPTED')
-      throw new ApiError('You can only confirm bookings that are in the pending status');
+      throw new ApiError(
+        'You can only confirm bookings that are in the pending status',
+      );
 
-    if (!booking?.place) throw new ApiError('Booking is not attached to a valid place.');
+    if (!booking?.place)
+      throw new ApiError('Booking is not attached to a valid place.');
 
     await this.updateBookingStatus(bookingId, 'ACCEPTED');
 
@@ -116,12 +133,16 @@ export class BookPlaceService {
         throw new ApiError('You can only cancel bookings that are accepted.');
 
       if (new Date().getTime() > booking.start_date.getTime())
-        throw new ApiError('You cannot cancel a booking that has already started');
+        throw new ApiError(
+          'You cannot cancel a booking that has already started',
+        );
 
       const cancelationManager = new BookingCancellationService(booking);
 
       if (!cancelationManager.isCancelable())
-        throw new ApiError('This booking cannot be cancelled due to cancellation policy');
+        throw new ApiError(
+          'This booking cannot be cancelled due to cancellation policy',
+        );
 
       return cancelationManager.refundAmount();
 

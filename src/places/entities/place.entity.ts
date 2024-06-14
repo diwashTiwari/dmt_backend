@@ -1,6 +1,5 @@
 import { ApiProperty, OmitType, PickType } from '@nestjs/swagger';
 import { Place } from '@prisma/client';
-import { IsString } from 'class-validator';
 import { AssetEntity } from '../../assets/entities/asset.entity';
 import { RoomEntity } from '../../rooms/entities/room.entity';
 import { CreatePlaceDto } from '../dto/create-place.dto';
@@ -16,7 +15,10 @@ class PlaceCountEntity {
   reviews!: number;
 }
 
-export class PlaceEntity extends OmitType(CreatePlaceDto, ['images']) implements Partial<Place> {
+export class PlaceEntity
+  extends OmitType(CreatePlaceDto, ['images'])
+  implements Partial<Place>
+{
   @ApiProperty()
   id!: number;
 
@@ -47,8 +49,11 @@ export class PlaceEntity extends OmitType(CreatePlaceDto, ['images']) implements
 export class RoomPriceEntity extends PickType(RoomEntity, ['price']) {}
 
 export class PlaceActiveEntity extends PlaceEntity {
-  @ApiProperty({type: () => RoomPriceEntity, isArray: true})
+  @ApiProperty({ type: () => RoomPriceEntity, isArray: true })
   rooms!: RoomPriceEntity[];
 }
 
-export class PlaceImagesEntity extends PickType(PlaceEntity, ['images', 'cover_image']) {}
+export class PlaceImagesEntity extends PickType(PlaceEntity, [
+  'images',
+  'cover_image',
+]) {}

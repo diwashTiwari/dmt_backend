@@ -1,18 +1,18 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+// import { Prisma } from '@prisma/client';
 import prisma from '../../config/db';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
 import { RoomEntity } from './entities/room.entity';
 import { getUpdatedBeds } from './helpers/room.helpers';
 
-const DEFAULT_ROOM_SELECT: Prisma.RoomInclude = {
-  place: {
-    select: {
-      user_id: true,
-    },
-  },
-};
+// const DEFAULT_ROOM_SELECT: Prisma.RoomInclude = {
+//   place: {
+//     select: {
+//       user_id: true,
+//     },
+//   },
+// };
 
 @Injectable()
 export class RoomsService {
@@ -65,7 +65,6 @@ export class RoomsService {
       }
 
       return room;
-
     } catch (error) {
       return Promise.reject(error);
     }

@@ -5,7 +5,6 @@ import { ApiProperty } from '@nestjs/swagger';
 import { UserResponse } from './user-response.dto';
 
 class UserAndTokenResponse {
-
   @ApiProperty()
   @IsString()
   token: string;
@@ -14,14 +13,11 @@ class UserAndTokenResponse {
   @Type(() => UserResponse)
   @ValidateNested()
   user: UserResponse;
-
 }
 
 export class UserAndTokenResponseDto extends GeneralResponseDto {
-
   @ApiProperty()
   @Type(() => UserAndTokenResponse)
   @ValidateNested()
   data: UserAndTokenResponse;
-
 }

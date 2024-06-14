@@ -3,7 +3,6 @@ import { EnumUserRole } from '@prisma/client';
 import { UserSession } from '../../../types/user';
 
 export class UserSessionEntity implements UserSession {
-
   @ApiProperty()
   id!: number;
 
@@ -35,6 +34,4 @@ export class UserSessionEntity implements UserSession {
 
   @ApiProperty()
   isCountryConfirmed!: boolean;
-
-
 }

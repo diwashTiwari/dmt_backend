@@ -1,10 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { BookingPolicy, EnumBusinessNature, ListingStats, Prisma } from '@prisma/client';
+import {
+  BookingPolicy,
+  EnumBusinessNature,
+  ListingStats,
+  Prisma,
+} from '@prisma/client';
 import { Transform } from 'class-transformer';
 import {
   IsEnum,
   IsNumber,
-  IsNumberString,
   IsOptional,
   IsString,
   MinLength,
@@ -15,7 +19,9 @@ import { Exactly } from '../../../helpers/type.helpers';
 
 type PlaceWithImages = Prisma.PlaceCreateArgs['data'];
 
-export class CreatePlaceDto implements Exactly<PlaceWithImages, CreatePlaceDto> {
+export class CreatePlaceDto
+  implements Exactly<PlaceWithImages, CreatePlaceDto>
+{
   @ApiString()
   title!: string;
 

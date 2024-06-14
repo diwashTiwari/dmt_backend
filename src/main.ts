@@ -17,9 +17,10 @@ async function bootstrap() {
     logger: getLoggerOptions(),
     cors: {
       credentials: true,
-      origin: (reqOrgin, callback) => {
-        callback(null, reqOrgin);
-      },
+      // origin: (reqOrgin, callback) => {
+      //   callback(null, reqOrgin);
+      // },
+      origin: ['*'],
     },
   });
 

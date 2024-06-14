@@ -1,10 +1,18 @@
-import { BadGatewayException, Injectable, Logger, ServiceUnavailableException } from '@nestjs/common';
+import {
+  BadGatewayException,
+  Injectable,
+  Logger,
+  ServiceUnavailableException,
+} from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PLACE_CONFIG } from '../../common/constants/place.constant';
 import { PagnationDto } from '../../common/dto/pagnation.dto';
 import { ApiError } from '../../common/errors/api.error';
 import { DatabseError } from '../../common/errors/database.error';
-import { ImageResponse, ImageService } from '../../common/services/images/image.service';
+import {
+  ImageResponse,
+  ImageService,
+} from '../../common/services/images/image.service';
 import prisma from '../../config/db';
 import { CreatePlaceDto } from './dto/create-place.dto';
 import { UpdatePlaceDto } from './dto/update-place.dto';
@@ -30,21 +38,29 @@ export class PlacesService {
 
   private logger = new Logger(PlacesService.name);
 
-  constructor(private readonly imageService: ImageService) {
-  }
+  constructor(private readonly imageService: ImageService) {}
 
-  async create(createPlaceDto: CreatePlaceDto, photos: Express.Multer.File[], user_id: number) {
+  async create(
+    createPlaceDto: CreatePlaceDto,
+    photos: Express.Multer.File[],
+    user_id: number,
+  ) {
     try {
-
       if (!photos || photos.length < PLACE_CONFIG.minimumPhotosPerListing) {
-        return Promise.reject(new ApiError(`Place must have at least ${PLACE_CONFIG.minimumPhotosPerListing} photos`));
+        return Promise.reject(
+          new ApiError(
+            `Place must have at least ${PLACE_CONFIG.minimumPhotosPerListing} photos`,
+          ),
+        );
       }
 
       const images = await this.imageService.uploadImages(photos);
 
       // Create all assets passed into the service params `photos`
       const imageTransaction = await prisma.$transaction(
-        images.map((image) => prisma.asset.create({ data: transformUrl(image) })),
+        images.map((image) =>
+          prisma.asset.create({ data: transformUrl(image) }),
+        ),
       );
 
       // Creates a place, sets the first image as the cover image, and connects the other images.
@@ -107,13 +123,17 @@ export class PlacesService {
 
   async findAllActive(pagnation: PagnationDto = new PagnationDto()) {
     try {
-      const places = await this.findAll(pagnation, {
-        AND: [
-          { listing_status: 'ACTIVE' },
-          { cover_image: { id: { not: undefined } } },
-          { rooms: { some: { id: { not: undefined } } } },
-        ],
-      }, { rooms: { select: { price: true } } });
+      const places = await this.findAll(
+        pagnation,
+        {
+          AND: [
+            { listing_status: 'ACTIVE' },
+            { cover_image: { id: { not: undefined } } },
+            { rooms: { some: { id: { not: undefined } } } },
+          ],
+        },
+        { rooms: { select: { price: true } } },
+      );
 
       return places;
     } catch (error) {
@@ -131,8 +151,8 @@ export class PlacesService {
           ...include,
           reviews: include?.reviews
             ? {
-              include: { user: true },
-            }
+                include: { user: true },
+              }
             : false,
         },
       });
@@ -158,7 +178,11 @@ export class PlacesService {
     }
   }
 
-  async update(id: number, updatePlaceDto: UpdatePlaceDto, images?: Express.Multer.File[]) {
+  async update(
+    id: number,
+    updatePlaceDto: UpdatePlaceDto,
+    images?: Express.Multer.File[],
+  ) {
     try {
       const getImageConnect = async () => {
         if (!images || !images?.length) return [];
@@ -166,7 +190,9 @@ export class PlacesService {
 
         // Create all assets passed into the service params `images`
         const imageTransaction = await prisma.$transaction(
-          imageResponse.map((image) => prisma.asset.create({ data: transformUrl(image) })),
+          imageResponse.map((image) =>
+            prisma.asset.create({ data: transformUrl(image) }),
+          ),
         );
 
         return imageTransaction.map((image) => ({ id: image.id }));

@@ -5,19 +5,16 @@ import { JwtUtilityService } from '../jwt/jwt-utility.service';
 
 @Injectable()
 export class DmtNodemailerEmailService {
-
   private logger = new Logger(DmtNodemailerEmailService.name);
 
   constructor(
     private readonly jwtUtilityService: JwtUtilityService,
     private readonly configService: ConfigService,
     private readonly nodemailerEmailService: NodemailerEmailService,
-  ) {
-  }
+  ) {}
 
   async sendWelcomeEmail(email: string) {
     try {
-
       const text = `Welcome to the DMT Tourism.`;
 
       return await this.nodemailerEmailService.sendMail({
@@ -26,7 +23,6 @@ export class DmtNodemailerEmailService {
         subject: 'DMT Tourism - Welcome Email',
         text,
       });
-
     } catch (e) {
       console.error(e);
       throw e;
@@ -35,12 +31,13 @@ export class DmtNodemailerEmailService {
 
   async sendVerificationLink(email: string) {
     try {
-
       const payload: any = { email };
 
       const token = await this.jwtUtilityService.sign(payload);
 
-      const url = `${this.configService.get('EMAIL_CONFIRMATION_URL')}?token=${token}`;
+      const url = `${this.configService.get(
+        'EMAIL_CONFIRMATION_URL',
+      )}?user=${email}&token=${token}`;
 
       const text = `Welcome to the DMT Tourism. To confirm the email address, click here: ${url}`;
 
@@ -51,10 +48,11 @@ export class DmtNodemailerEmailService {
         text,
       });
 
-      this.logger.log(`sendVerificationLink - result : ${JSON.stringify(result)}`);
+      this.logger.log(
+        `sendVerificationLink - result : ${JSON.stringify(result)}`,
+      );
 
       return token;
-
     } catch (e) {
       this.logger.error(e);
       return Promise.reject(e);
@@ -63,12 +61,13 @@ export class DmtNodemailerEmailService {
 
   async sendResetPasswordEmail(email: string) {
     try {
-
       const payload: any = { email };
 
       const token = await this.jwtUtilityService.sign(payload);
 
-      const url = `${this.configService.get('RESET_PASSWORD_URL')}?token=${token}`;
+      const url = `${this.configService.get(
+        'RESET_PASSWORD_URL',
+      )}?token=${token}`;
 
       const text = `Forgot your password?. We received a request to reset the password for your account. To reset your password, click here: ${url}`;
 
@@ -79,10 +78,11 @@ export class DmtNodemailerEmailService {
         text,
       });
 
-      this.logger.log(`sendResetPasswordEmail - result : ${JSON.stringify(result)}`);
+      this.logger.log(
+        `sendResetPasswordEmail - result : ${JSON.stringify(result)}`,
+      );
 
       return token;
-
     } catch (e) {
       this.logger.error(e);
       return Promise.reject(e);

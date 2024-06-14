@@ -21,8 +21,7 @@ import { RequestWithUser } from '../../common/requests/request-with-user';
 @ApiTags('Reviews')
 @Controller('places')
 export class ReviewsController {
-  constructor(private readonly reviewsService: ReviewsService) {
-  }
+  constructor(private readonly reviewsService: ReviewsService) {}
 
   @Post(':placeId/reviews')
   @SetMetadata('roles', [EnumUserRole.BUYER])

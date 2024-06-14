@@ -13,7 +13,7 @@ import {
   DeleteObjectCommandInput,
 } from '@aws-sdk/client-s3';
 import { FileOptions, IImageService, ImageResponse } from './image.service';
-import { v4 as uuidV4, v1 } from 'uuid';
+import { v4 as uuidV4 } from 'uuid';
 
 @Injectable()
 export class S3ImageService implements IImageService {
@@ -89,7 +89,9 @@ export class S3ImageService implements IImageService {
       return response;
     } catch (error) {
       this.logger.error('Error deleting file in S3');
-      throw new ServiceUnavailableException(`Error deleting file in S3 ${error}`);
+      throw new ServiceUnavailableException(
+        `Error deleting file in S3 ${error}`,
+      );
     }
   }
 

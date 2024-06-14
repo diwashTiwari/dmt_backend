@@ -2,26 +2,14 @@ import axios, { RawAxiosRequestHeaders } from 'axios';
 import {
   Injectable,
   NotFoundException,
-  BadRequestException,
   InternalServerErrorException,
   Logger,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import {
-  EnumEventType,
-  EventBoostedCategory,
-  EventListing,
-  Place,
-  Prisma
-} from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { errorMessage } from '../constant/payment-error-message.constant';
 import { PaymentRepository } from '../payment.repository';
-import { OnsiteEventOrder } from '../order/onsite-event.order';
-import { OnlineEventOrder } from '../order/online-event.order';
 import { SaveEventPaymentDto } from '../dto/event/save-event-payment.dto';
-import { PaymentMetadata } from '../type/payment-metadata.type';
-import { BookingPlaceOrder } from '../order/booking-place.order';
-import { BoostEventOrder } from '../order/boost-event.order';
 import { PayoutDto } from '../dto/payout.dto';
 import { CreatePaymentDto } from '../dto/create-payment.dto';
 import { CreatedPayment } from '../type/created-payment.type';
@@ -31,34 +19,34 @@ import { CapturedPayment } from '../type/captured-payment.type';
 export class PaymentService {
   private logger = new Logger(PaymentService.name);
 
-  private readonly paypalBaseUrl: string = "";
-  private readonly paypalClientId: string = "";
-  private readonly paypalClientSecret: string = "";
+  private readonly paypalBaseUrl: string = '';
+  private readonly paypalClientId: string = '';
+  private readonly paypalClientSecret: string = '';
 
   constructor(
     private readonly configService: ConfigService,
-    private readonly paymentRepository: PaymentRepository
+    private readonly paymentRepository: PaymentRepository,
   ) {
-    this.paypalBaseUrl = this.configService.get("PAYPAL_BASE_URL");
-    this.paypalClientId = this.configService.get("PAYPAL_CLIENT_ID");
-    this.paypalClientSecret = this.configService.get("PAYPAL_CLIENT_SECRET");
+    this.paypalBaseUrl = this.configService.get('PAYPAL_BASE_URL');
+    this.paypalClientId = this.configService.get('PAYPAL_CLIENT_ID');
+    this.paypalClientSecret = this.configService.get('PAYPAL_CLIENT_SECRET');
   }
 
   private async generateAccessToken(): Promise<string> {
-    const url = `${this.paypalBaseUrl}/v1/oauth2/token`
+    const url = `${this.paypalBaseUrl}/v1/oauth2/token`;
 
-    const authString = Buffer
-      .from(`${this.paypalClientId}:${this.paypalClientSecret}`)
-      .toString("base64");
+    const authString = Buffer.from(
+      `${this.paypalClientId}:${this.paypalClientSecret}`,
+    ).toString('base64');
 
-    const body = { grant_type: "client_credentials" };
+    const body = { grant_type: 'client_credentials' };
 
     const headers = {
-      "Content-Type": "application/x-www-form-urlencoded",
-      "Authorization": `Basic ${authString}`
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: `Basic ${authString}`,
     };
 
-    let response: any = "";
+    let response: any = '';
 
     try {
       const { data } = await axios.post(url, body, { headers });
@@ -71,7 +59,9 @@ export class PaymentService {
     return response?.access_token;
   }
 
-  async createPayment(createPaymentDto: CreatePaymentDto): Promise<CreatedPayment> {
+  async createPayment(
+    createPaymentDto: CreatePaymentDto,
+  ): Promise<CreatedPayment> {
     const url = `${this.paypalBaseUrl}/v2/checkout/orders`;
 
     const accessToken = await this.generateAccessToken();
@@ -79,24 +69,25 @@ export class PaymentService {
     const { currency, amount } = createPaymentDto;
 
     const body = {
-      purchase_units: [{
-        amount: {
-          currency_code: currency,
-          value: amount,
-
-        }
-      }],
-      intent: "CAPTURE"
+      purchase_units: [
+        {
+          amount: {
+            currency_code: currency,
+            value: amount,
+          },
+        },
+      ],
+      intent: 'CAPTURE',
     };
 
     const headers: RawAxiosRequestHeaders = {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${accessToken}`
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${accessToken}`,
     };
 
     try {
       const { data } = await axios.post(url, body, { headers });
-      return data
+      return data;
     } catch (error) {
       this.logger.error(error);
       throw new InternalServerErrorException(errorMessage.failToProcessPayment);
@@ -109,8 +100,8 @@ export class PaymentService {
     const accessToken = await this.generateAccessToken();
 
     const headers: RawAxiosRequestHeaders = {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${accessToken}`
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${accessToken}`,
     };
 
     try {
@@ -130,8 +121,8 @@ export class PaymentService {
     const accessToken = await this.generateAccessToken();
 
     const headers: RawAxiosRequestHeaders = {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${accessToken}`
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${accessToken}`,
     };
 
     const { platformCurrency, payoutDomesticFee } = paymentSetting;
@@ -143,7 +134,7 @@ export class PaymentService {
     const body = {
       sender_batch_header: {
         email_subject: subject,
-        email_message: message
+        email_message: message,
       },
       items: [
         {
@@ -152,12 +143,11 @@ export class PaymentService {
           receiver: toPaypalReceiverId,
           amount: {
             currency: platformCurrency,
-            value: totalAmount
-          }
-        }
-      ]
+            value: totalAmount,
+          },
+        },
+      ],
     };
-
 
     try {
       const { data } = await axios.post(url, body, { headers });
@@ -173,7 +163,8 @@ export class PaymentService {
   }
 
   async savePaymentRecord(savePaymentDto: SaveEventPaymentDto) {
-    const { userId, createdPayment, paymentMetadata, paymentContext } = savePaymentDto;
+    const { userId, createdPayment, paymentMetadata, paymentContext } =
+      savePaymentDto;
 
     const { totalAmount, nextPaymentAmount, haveNextPayment } = paymentMetadata;
 
@@ -205,9 +196,11 @@ export class PaymentService {
     const { amount } = paymentHistory;
     const { currencyFixRate } = paymentSetting;
 
-    const feeAmount = parseFloat((((fee * amount) / 100) + currencyFixRate).toFixed(2));
+    const feeAmount = parseFloat(
+      ((fee * amount) / 100 + currencyFixRate).toFixed(2),
+    );
     const totalAmount = amount - feeAmount;
-    const payerName = `${payer.name.given_name} ${payer.name.surname}`
+    const payerName = `${payer.name.given_name} ${payer.name.surname}`;
 
     const paymentRecord: Prisma.PaymentUpdateInput = {
       isPaid: true,
@@ -219,7 +212,7 @@ export class PaymentService {
       payerEmail: payer.email_address,
       payerCountryCode: payer.address.country_code,
       payerId: payer.payer_id,
-      paidAt: new Date()
+      paidAt: new Date(),
     };
     return await this.paymentRepository.updatePayment(refId, paymentRecord);
   }

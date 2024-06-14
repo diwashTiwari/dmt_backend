@@ -9,7 +9,6 @@ import {
   Req,
   Res,
   UnauthorizedException,
-  UseGuards,
 } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Request, Response } from 'express';
@@ -24,7 +23,6 @@ import {
   ForgotPasswordDto,
   ResetPasswordDto,
 } from './dto';
-import { AuthGuard } from '../../common/middlewears/auth.guard';
 import { SuccessResponse } from '../../common/responses/success-response';
 import { ErrorResponse } from '../../common/responses/error-response';
 import { TokenResponseDto } from './responses/token-response.dto';
@@ -37,17 +35,25 @@ import { RequestWithUser } from '../../common/requests/request-with-user';
 export class AuthController {
   private logger = new Logger(AuthController.name);
 
-  constructor(private readonly authService: AuthService) {
-  }
+  constructor(private readonly authService: AuthService) {}
 
   // new - ganesh
 
   @ApiResponse({ status: 200, type: TokenResponseDto })
   @Post('sign-in-google')
-  async signInWithGoogle(@Body() signInWithGoogleDto: SignInWithGoogleDto, @Res() res: Response) {
+  async signInWithGoogle(
+    @Body() signInWithGoogleDto: SignInWithGoogleDto,
+    @Res() res: Response,
+  ) {
     try {
-      const token = await this.authService.signInWithGoogle(signInWithGoogleDto);
-      SuccessResponse.sendSuccessResponse(res, HttpStatus.OK, { token }, 'The sign-in process with Google has been successful.');
+      const token =
+        await this.authService.signInWithGoogle(signInWithGoogleDto);
+      SuccessResponse.sendSuccessResponse(
+        res,
+        HttpStatus.OK,
+        { token },
+        'The sign-in process with Google has been successful.',
+      );
     } catch (err) {
       ErrorResponse.sendErrorResponse(res, err);
     }
@@ -55,11 +61,21 @@ export class AuthController {
 
   @ApiResponse({ status: 201, type: TokenResponseDto })
   @Post('sign-up-email')
-  async signUpWithEmail(@Req() req: Request, @Body() signUpWithEmailDto: SignUpWithEmailDto, @Res() res: Response) {
+  async signUpWithEmail(
+    @Req() req: Request,
+    @Body() signUpWithEmailDto: SignUpWithEmailDto,
+    @Res() res: Response,
+  ) {
     try {
-      const { user, token } = await this.authService.signUpWithEmail(signUpWithEmailDto);
+      const { token } =
+        await this.authService.signUpWithEmail(signUpWithEmailDto);
 
-      SuccessResponse.sendSuccessResponse(res, HttpStatus.CREATED, { token }, 'The sign-up process with email has been successful.');
+      SuccessResponse.sendSuccessResponse(
+        res,
+        HttpStatus.CREATED,
+        { token },
+        'The sign-up process with email has been successful.',
+      );
     } catch (err) {
       ErrorResponse.sendErrorResponse(res, err);
     }
@@ -67,10 +83,20 @@ export class AuthController {
 
   @ApiResponse({ status: 200, type: GeneralResponseDto })
   @Post('resend-email-confirmation')
-  async resendEmailConfirmation(@Body() resendVerifyEmailDto: ResendVerifyEmailDto, @Res() res: Response) {
+  async resendEmailConfirmation(
+    @Body() resendVerifyEmailDto: ResendVerifyEmailDto,
+    @Res() res: Response,
+  ) {
     try {
-      const result = await this.authService.resendEmailConfirmation(resendVerifyEmailDto.email);
-      SuccessResponse.sendSuccessResponse(res, HttpStatus.OK, result, 'The verify email has been successfully sent.');
+      const result = await this.authService.resendEmailConfirmation(
+        resendVerifyEmailDto.email,
+      );
+      SuccessResponse.sendSuccessResponse(
+        res,
+        HttpStatus.OK,
+        result,
+        'The verify email has been successfully sent.',
+      );
     } catch (err) {
       ErrorResponse.sendErrorResponse(res, err);
     }
@@ -78,10 +104,18 @@ export class AuthController {
 
   @ApiResponse({ status: 200, type: GeneralResponseDto })
   @Post('email-confirmation')
-  async emailConfirmation(@Body() confirmationData: ConfirmEmailDto, @Res() res: Response) {
+  async emailConfirmation(
+    @Body() confirmationData: ConfirmEmailDto,
+    @Res() res: Response,
+  ) {
     try {
       await this.authService.emailConfirmation(confirmationData);
-      SuccessResponse.sendSuccessResponse(res, HttpStatus.OK, null, 'The email confirmation has been successful.');
+      SuccessResponse.sendSuccessResponse(
+        res,
+        HttpStatus.OK,
+        null,
+        'The email confirmation has been successful.',
+      );
     } catch (err) {
       ErrorResponse.sendErrorResponse(res, err);
     }
@@ -89,10 +123,20 @@ export class AuthController {
 
   @ApiResponse({ status: 200, type: GeneralResponseDto })
   @Post('forgot-password')
-  async forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto, @Res() res: Response) {
+  async forgotPassword(
+    @Body() forgotPasswordDto: ForgotPasswordDto,
+    @Res() res: Response,
+  ) {
     try {
-      const result = await this.authService.forgotPassword(forgotPasswordDto.email);
-      SuccessResponse.sendSuccessResponse(res, HttpStatus.OK, result, 'The reset password email has been successfully sent.');
+      const result = await this.authService.forgotPassword(
+        forgotPasswordDto.email,
+      );
+      SuccessResponse.sendSuccessResponse(
+        res,
+        HttpStatus.OK,
+        result,
+        'The reset password email has been successfully sent.',
+      );
     } catch (err) {
       ErrorResponse.sendErrorResponse(res, err);
     }
@@ -100,10 +144,21 @@ export class AuthController {
 
   @ApiResponse({ status: 200, type: GeneralResponseDto })
   @Post('reset-password')
-  async resetPassword(@Body() resetPasswordDto: ResetPasswordDto, @Res() res: Response) {
+  async resetPassword(
+    @Body() resetPasswordDto: ResetPasswordDto,
+    @Res() res: Response,
+  ) {
     try {
-      const result = await this.authService.resetPassword(resetPasswordDto.token, resetPasswordDto.password);
-      SuccessResponse.sendSuccessResponse(res, HttpStatus.OK, result, 'Password reset successful.');
+      const result = await this.authService.resetPassword(
+        resetPasswordDto.token,
+        resetPasswordDto.password,
+      );
+      SuccessResponse.sendSuccessResponse(
+        res,
+        HttpStatus.OK,
+        result,
+        'Password reset successful.',
+      );
     } catch (err) {
       ErrorResponse.sendErrorResponse(res, err);
     }
@@ -111,14 +166,23 @@ export class AuthController {
 
   @ApiResponse({ status: 200, type: UserAndTokenResponseDto })
   @Post('sign-in')
-  async signIn(@Body() loginDto: LoginDto, @Req() req: Request, @Res() res: Response) {
+  async signIn(
+    @Body() loginDto: LoginDto,
+    @Req() req: Request,
+    @Res() res: Response,
+  ) {
     try {
       const { user, token } = await this.authService.login(loginDto);
 
-      SuccessResponse.sendSuccessResponse(res, HttpStatus.OK, {
-        token,
-        user,
-      }, 'The sign-in process has been successful.');
+      SuccessResponse.sendSuccessResponse(
+        res,
+        HttpStatus.OK,
+        {
+          token,
+          user,
+        },
+        'The sign-in process has been successful.',
+      );
     } catch (err) {
       ErrorResponse.sendErrorResponse(res, err);
     }
@@ -148,7 +212,6 @@ export class AuthController {
 
   @Post('logout')
   @HttpCode(200)
-  @UseGuards(AuthGuard)
   async logout(@Req() req: RequestWithUser) {
     req.user = undefined;
     req.session.destroy(() => {
