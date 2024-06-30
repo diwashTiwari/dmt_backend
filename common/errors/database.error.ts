@@ -35,7 +35,7 @@ const getPrismaErrorMessage = (error: PrismaClientKnownRequestError) => {
   return prismaError?.[1].message;
 };
 
-type PrsimaErrorType = Record<typeof PRISMA_ERORR_TYPE[number], PrismaError>;
+type PrsimaErrorType = Record<(typeof PRISMA_ERORR_TYPE)[number], PrismaError>;
 
 interface PrismaError {
   code: string;

@@ -14,5 +14,4 @@ export class DateRangesDTO {
   @ApiProperty()
   @IsTimeFormat()
   endTime: string;
-  
 }

@@ -1,8 +1,8 @@
-import { IsDateString, IsNumber } from "class-validator";
+import { IsDateString, IsNumber } from 'class-validator';
 
 export class CreatePlaceBookingDto {
-  @IsNumber({}, {each: true})
-  room_ids!: number[]
+  @IsNumber({}, { each: true })
+  room_ids!: number[];
 
   @IsDateString()
   start_date!: Date;

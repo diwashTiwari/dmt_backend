@@ -2,7 +2,8 @@ import {
   Body,
   Controller,
   Delete,
-  Get, HttpStatus,
+  Get,
+  HttpStatus,
   Param,
   ParseIntPipe,
   Patch,
@@ -25,22 +26,21 @@ import { SuccessResponse } from '../../common/responses/success-response';
 @ApiTags('Rooms')
 @Controller('rooms')
 export class RoomsController {
-  constructor(
-    private readonly roomsService: RoomsService,
-  ) {
-  }
+  constructor(private readonly roomsService: RoomsService) {}
 
   @ApiResponse({ type: RoomEntity })
   @Post('/')
   @SetMetadata('roles', [EnumUserRole.SELLER])
   @UseGuards(AuthGuard, RoleAuthGuard)
-  async create(
-    @Body() createRoomDto: CreateRoomDto,
-    @Res() res: Response,
-  ) {
+  async create(@Body() createRoomDto: CreateRoomDto, @Res() res: Response) {
     try {
       const result = await this.roomsService.create(createRoomDto);
-      SuccessResponse.sendSuccessResponse(res, HttpStatus.CREATED, result, 'Room created successfully.');
+      SuccessResponse.sendSuccessResponse(
+        res,
+        HttpStatus.CREATED,
+        result,
+        'Room created successfully.',
+      );
     } catch (err) {
       ErrorResponse.sendErrorResponse(res, err);
     }
@@ -48,12 +48,21 @@ export class RoomsController {
 
   @ApiResponse({ type: [RoomEntity] })
   @Get('/:placeId')
-  @SetMetadata('roles', [EnumUserRole.SELLER])
-  @UseGuards(AuthGuard, RoleAuthGuard)
-  async findAll(@Param('placeId', ParseIntPipe) placeId: number, @Res() res: Response) {
+  // @SetMetadata('roles', [EnumUserRole.SELLER])
+  // @UseGuards(AuthGuard, RoleAuthGuard)
+  @UseGuards(AuthGuard)
+  async findAll(
+    @Param('placeId', ParseIntPipe) placeId: number,
+    @Res() res: Response,
+  ) {
     try {
       const result = await this.roomsService.findAllByPlaceId(placeId);
-      SuccessResponse.sendSuccessResponse(res, HttpStatus.OK, result, 'Rooms fetched successfully.');
+      SuccessResponse.sendSuccessResponse(
+        res,
+        HttpStatus.OK,
+        result,
+        'Rooms fetched successfully.',
+      );
     } catch (err) {
       ErrorResponse.sendErrorResponse(res, err);
     }
@@ -70,7 +79,12 @@ export class RoomsController {
   ) {
     try {
       const result = await this.roomsService.findOneByPlaceId(placeId, roomId);
-      SuccessResponse.sendSuccessResponse(res, HttpStatus.OK, result, 'Room fetched successfully.');
+      SuccessResponse.sendSuccessResponse(
+        res,
+        HttpStatus.OK,
+        result,
+        'Room fetched successfully.',
+      );
     } catch (err) {
       ErrorResponse.sendErrorResponse(res, err);
     }
@@ -87,7 +101,12 @@ export class RoomsController {
   ) {
     try {
       const result = await this.roomsService.update(roomId, updateRoomDto);
-      SuccessResponse.sendSuccessResponse(res, HttpStatus.OK, result, 'Room updated successfully.');
+      SuccessResponse.sendSuccessResponse(
+        res,
+        HttpStatus.OK,
+        result,
+        'Room updated successfully.',
+      );
     } catch (err) {
       ErrorResponse.sendErrorResponse(res, err);
     }
@@ -99,8 +118,15 @@ export class RoomsController {
   @UseGuards(AuthGuard, RoleAuthGuard)
   async remove(@Param('roomId') roomId: string, @Res() res: Response) {
     try {
+      console.log(roomId);
+
       const result = await this.roomsService.remove(+roomId);
-      SuccessResponse.sendSuccessResponse(res, HttpStatus.OK, result, 'Room deleted successfully.');
+      SuccessResponse.sendSuccessResponse(
+        res,
+        HttpStatus.OK,
+        result,
+        'Room deleted successfully.',
+      );
     } catch (err) {
       ErrorResponse.sendErrorResponse(res, err);
     }

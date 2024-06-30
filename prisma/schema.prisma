@@ -534,7 +534,7 @@ model RoomBed {
   id       Int    @id @default(autoincrement())
   bed_type String
   amount   Int
-  room     Room   @relation(fields: [room_id], references: [id])
+  room     Room   @relation(fields: [room_id], references: [id], onDelete: Cascade)
   room_id  Int
 }
 

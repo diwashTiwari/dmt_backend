@@ -1,5 +1,3 @@
-import { Review } from "@prisma/client";
-
 export class ReviewAggregateEvent {
   placeId!: number;
 

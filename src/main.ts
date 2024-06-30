@@ -13,16 +13,16 @@ import { getLoggerOptions } from '../config/logger.config';
 import { RelatedAction } from '../helpers/related-action.helper';
 
 async function bootstrap() {
-  const corsOrigin = process.env.CORS_ORIGIN_URL || '*';
+  // const corsOrigin = process.env.CORS_ORIGIN_URL || '*';
 
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     logger: getLoggerOptions(),
     cors: {
       credentials: true,
-      // origin: (reqOrgin, callback) => {
-      //   callback(null, reqOrgin);
-      // },
-      origin: corsOrigin,
+      origin: (reqOrgin, callback) => {
+        callback(null, reqOrgin);
+      },
+      // origin: corsOrigin,
     },
   });
 

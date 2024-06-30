@@ -94,6 +94,8 @@ export class RoomsService {
 
   async remove(id: number): Promise<any> {
     try {
+      console.log(`room`, id);
+
       return await prisma.room.delete({
         where: {
           id,

@@ -7,8 +7,7 @@ import { ReviewAggregateEvent } from '../event/review-aggregate.event';
 
 @Injectable()
 export class ReviewAggregateListner {
-  constructor(private readonly placeService: PlacesService) {
-  }
+  constructor(private readonly placeService: PlacesService) {}
 
   @OnEvent(EVENTS.review.placeReviewAggregate)
   async handleAggregatePlaceReviews(event: ReviewAggregateEvent) {
@@ -25,11 +24,24 @@ export class ReviewAggregateListner {
     });
 
     const aggregateReviews = () => {
-      const ratings = ['cleanliness', 'facilities', 'location', 'roomComfort', 'serviceQuality', 'valueForMoney'];
+      const ratings = [
+        'cleanliness',
+        'facilities',
+        'location',
+        'roomComfort',
+        'serviceQuality',
+        'valueForMoney',
+      ];
 
-      return (ratings.reduce((acc, rating) => {
-        return acc + reviews.reduce((total, review) => total + review[rating], 0) / reviews.length;
-      }, 0) / ratings.length).toFixed(1);
+      return (
+        ratings.reduce((acc, rating) => {
+          return (
+            acc +
+            reviews.reduce((total, review) => total + review[rating], 0) /
+              reviews.length
+          );
+        }, 0) / ratings.length
+      ).toFixed(1);
     };
 
     // (reviews.reduce((acc, review) => (acc += review.rating), 0) / reviews.length).toFixed(1);

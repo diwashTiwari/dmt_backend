@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import {
   ArgumentMetadata,
   BadRequestException,
   Injectable,
   Logger,
-  PipeTransform
+  PipeTransform,
 } from '@nestjs/common';
 
 @Injectable()
@@ -14,11 +16,14 @@ export class FilesValidationPipe implements PipeTransform {
     'image/webp',
     'image/png',
     'image/jpg',
-    'image/bmp'
+    'image/bmp',
   ];
   private logger = new Logger(FilesValidationPipe.name);
 
-  transform(files: Express.Multer.File[] | Express.Multer.File, metadata: ArgumentMetadata) {
+  transform(
+    files: Express.Multer.File[] | Express.Multer.File,
+    metadata: ArgumentMetadata,
+  ) {
     if (Array.isArray(files)) return this.validateFilesArray(files);
 
     return this.vaildateFile(files);
@@ -47,9 +52,11 @@ export class FilesValidationPipe implements PipeTransform {
   private vaildateFile(file: Express.Multer.File) {
     if (!file) return undefined;
 
-    if (!this.isValidSize(file)) throw new BadRequestException('File size is to large');
+    if (!this.isValidSize(file))
+      throw new BadRequestException('File size is to large');
 
-    if (!this.isValidType(file)) throw new BadRequestException('Contains invalid file type');
+    if (!this.isValidType(file))
+      throw new BadRequestException('Contains invalid file type');
 
     return file;
   }

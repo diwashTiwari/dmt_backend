@@ -165,6 +165,8 @@ export class PlacesService {
 
   async findOneImages(id: number) {
     try {
+      console.log(id);
+
       const placeImages = await prisma.place.findUniqueOrThrow({
         where: { id },
         include: {

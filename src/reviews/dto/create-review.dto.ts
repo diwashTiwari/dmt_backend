@@ -1,10 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Review } from '@prisma/client';
-import { IsNumber, IsString, Max, Min, MinLength } from 'class-validator';
+import { IsNumber, Max, Min } from 'class-validator';
 import { Exactly } from '../../../helpers/type.helpers';
 
 export class CreateReviewDto implements Exactly<Review, CreateReviewDto> {
-
   @Max(10)
   @Min(1)
   @ApiProperty()
@@ -23,7 +22,6 @@ export class CreateReviewDto implements Exactly<Review, CreateReviewDto> {
   @IsNumber()
   location: number;
 
-
   @Max(10)
   @Min(1)
   @ApiProperty()
@@ -41,5 +39,4 @@ export class CreateReviewDto implements Exactly<Review, CreateReviewDto> {
   @ApiProperty()
   @IsNumber()
   valueForMoney: number;
-
 }

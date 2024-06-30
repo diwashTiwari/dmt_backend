@@ -1,7 +1,4 @@
-import {
-  IsString,
-  ValidateNested,
-} from 'class-validator';
+import { IsString, ValidateNested } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { DateRangesDTO } from './date-ranges.dto';
 import { Type } from 'class-transformer';

@@ -33,7 +33,7 @@ import { PlacesService } from './places.service';
 import { AuthGuard } from '../../common/middlewears/auth.guard';
 import { RoleAuthGuard } from '../../common/middlewears/role-auth.guard';
 import { PhoneCountryValidationGuard } from '../../common/middlewears/phone-country-validation.guard';
-import { ContinentGuard } from '../../common/middlewears/continent.guard';
+// import { ContinentGuard } from '../../common/middlewears/continent.guard';
 import { EnumUserRole } from '@prisma/client';
 import { SuccessResponse } from '../../common/responses/success-response';
 import { ErrorResponse } from '../../common/responses/error-response';
@@ -53,7 +53,7 @@ export class PlacesController {
     AuthGuard,
     RoleAuthGuard,
     PhoneCountryValidationGuard,
-    ContinentGuard,
+    // ContinentGuard,
   )
   @UseInterceptors(FilesInterceptor('photos'))
   async create(

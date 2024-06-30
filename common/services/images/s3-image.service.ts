@@ -4,7 +4,6 @@ import {
   Logger,
   ServiceUnavailableException,
 } from '@nestjs/common';
-// import { IImageService } from './image.service';
 import {
   PutObjectCommand,
   PutObjectCommandInput,
@@ -18,15 +17,17 @@ import { v4 as uuidV4 } from 'uuid';
 @Injectable()
 export class S3ImageService implements IImageService {
   private client = new S3Client({
-    region: 'us-east-1',
+    region: 'eu2',
+    endpoint: 'https://eu2.contabostorage.com',
     credentials: {
-      accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+      accessKeyId: process.env.CONTABO_ACCESS_KEY_ID,
+      secretAccessKey: process.env.CONTABO_SECRET_ACCESS_KEY,
     },
+    forcePathStyle: true,
   });
-  private bucket = process.env.AWS_S3_BUCKET_NAME;
+  private bucket = process.env.CONTABO_BUCKET_NAME;
   private folderPath = `user-images`;
-  private S3Uri = 'https://d3b4bn74kl323.cloudfront.net';
+  private S3Uri = 'https://eu2.contabostorage.com';
   private logger = new Logger(S3ImageService.name);
 
   async uploadImage(fileData: FileOptions): Promise<ImageResponse> {

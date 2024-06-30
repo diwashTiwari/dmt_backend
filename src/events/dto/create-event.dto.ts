@@ -23,7 +23,6 @@ import { Transform, Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateEventDTO {
-
   @ApiProperty()
   @IsOptional()
   @IsArray()
@@ -74,13 +73,13 @@ export class CreateEventDTO {
 
   @ApiProperty()
   @IsEnum(EnumListingPaidType)
-  @ValidateIf(o => o.isPaid === true)
+  @ValidateIf((o) => o.isPaid === true)
   listingPaidType: EnumListingPaidType;
 
   @ApiProperty()
   @Transform(({ value }) => parseInt(value))
   @IsNumber()
-  @ValidateIf(o => o.isPaid === true)
+  @ValidateIf((o) => o.isPaid === true)
   noOfPromotionDays: number;
 
   @ApiProperty()
@@ -170,7 +169,7 @@ export class CreateEventDTO {
   @ApiProperty()
   @Transform(({ value }) => parseFloat(value))
   @IsNumber()
-  @ValidateIf(o => o.isDiscountAvailable === true)
+  @ValidateIf((o) => o.isDiscountAvailable === true)
   discount: number;
 
   @ApiProperty()

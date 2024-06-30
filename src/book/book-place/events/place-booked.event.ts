@@ -1,5 +1,4 @@
-import { Place, User } from '@prisma/client';
-import { UserSession } from '../../../../types/user';
+import { Place } from '@prisma/client';
 import { UserEntity } from '../../../users/entities/user.entity';
 
 export class PlaceBookedEvent {

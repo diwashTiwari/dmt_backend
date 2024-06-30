@@ -23,10 +23,7 @@ import { RoleAuthGuard } from '../../../common/middlewears/role-auth.guard';
 @Controller('book')
 @UseInterceptors(SentryInterceptor)
 export class BookPlaceController {
-  constructor(
-    private readonly bookPlaceService: BookPlaceService,
-  ) {
-  }
+  constructor(private readonly bookPlaceService: BookPlaceService) {}
 
   @Post(':placeId')
   @SetMetadata('roles', [EnumUserRole.BUYER])

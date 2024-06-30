@@ -2,7 +2,7 @@ import {
   Injectable,
   CanActivate,
   ExecutionContext,
-  ForbiddenException,
+  // ForbiddenException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { ErrorResponse } from '../responses/error-response';
@@ -20,13 +20,13 @@ export class PhoneCountryValidationGuard implements CanActivate {
         return Promise.reject(new UnauthorizedException('User is not found!'));
       }
 
-      const user = request.user;
+      // const user = request.user;
 
-      if (!user.isPhoneNumberConfirmed || !user.isCountryConfirmed) {
-        return Promise.reject(
-          new ForbiddenException('Phone number or country is unverified!'),
-        );
-      }
+      // if (!user.isPhoneNumberConfirmed || !user.isCountryConfirmed) {
+      //   return Promise.reject(
+      //     new ForbiddenException('Phone number or country is unverified!'),
+      //   );
+      // }
 
       return true;
     } catch (err) {
